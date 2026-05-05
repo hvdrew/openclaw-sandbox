@@ -139,6 +139,7 @@ If you wanted to wipe the sandboxes internal state you could accomplish this by 
 ```bash
 sbx rm openclaw -f 2>$null
 ```
+> NOTE: This is fully destructive and will completely wipe the container. Do not run unless you want to destroy and start from scratch.
 
 # Finding a Better Model
 The model I started with seemed fine, but I wanted to try another option out. The OSS 20b model had issues with handling text and file modifications pretty much immediately.
