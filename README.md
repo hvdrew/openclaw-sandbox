@@ -209,3 +209,10 @@ No arguments are required for either script.
 ./scripts/sbx-network-policy-normal.ps1  # sets normal policy rules
 ./scripts/sbx-network-policy-open.ps1    # sets open policy rules
 ```
+
+### Publish Ports
+Some apps that are built by OpenClaw expose ports that we want to access on the host machine. To do this, we must publish the port via `sbx`. Again, I hate remembering stuff, so I have a basic script set up to republish anything I commonly need in case the network profile is reset.
+
+```powershell
+./scripts/publish-ports.ps1
+```
