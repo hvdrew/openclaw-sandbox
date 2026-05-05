@@ -1,4 +1,6 @@
 TODO: This doc is out of date. I should definitely spruce it up after getting the scripts finished.
+TODO: Scripts need finishing/refactoring
+TODO: Need a custom image for the docker sandbox so it can start with a setup.sh script ready to run
 
 ## General
 This repo contains everything needed to get a docker sandbox setup for running OpenClaw with local models or with things like ChatGPT Codex. The priority here is security and isolation from the host system, without losing access to hardware. It uses the newer docker sandboxes feature to accomplish these goals.
