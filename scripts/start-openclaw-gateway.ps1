@@ -29,7 +29,7 @@ Write-Host "Starting OpenClaw Gateway inside SBX '$Sandbox'..."
 Write-Host "Leave this window open while using the dashboard."
 Write-Host ""
 
-sbx exec $Sandbox bash -lc "printf '%s' '$remoteB64' | base64 -d | bash"
+sbx exec -it $Sandbox bash -lc "printf '%s' '$remoteB64' | base64 -d | bash"
 
 Write-Host ""
 Write-Host "OpenClaw Gateway exited."
