@@ -1,6 +1,11 @@
 # scripts/sbx-network-policy-open.ps1
 
-sbx stop openclaw 2>$null
+[CmdletBinding()]
+param(
+  [string]$Sandbox = "openclaw"
+)
+
+sbx stop $Sandbox 2>$null
 
 "1" | sbx policy reset --force
 sbx policy set-default allow-all
@@ -11,4 +16,4 @@ sbx policy allow network "localhost:12434"
 
 sbx policy ls --type network
 
-Write-Host "Sandbox Network set to Open."
+Write-Host "Sandbox network policy set to Open."

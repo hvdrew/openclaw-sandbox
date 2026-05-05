@@ -1,0 +1,16 @@
+schemaVersion: "1"
+kind: mixin
+name: openclaw-bootstrap
+displayName: OpenClaw Bootstrap
+description: Injects the OpenClaw first-run setup script and allows required setup/auth domains.
+
+network:
+  allowedDomains:
+    - auth.openai.com
+    - chatgpt.com
+    - api.openai.com
+    - deb.nodesource.com
+    - registry.npmjs.org
+    - nodejs.org
+    - localhost:11434
+    - localhost:12434
