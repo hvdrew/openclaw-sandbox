@@ -1,6 +1,11 @@
 # scripts/sbx-network-policy-normal.ps1
 
-sbx stop openclaw 2>$null
+[CmdletBinding()]
+param(
+  [string]$Sandbox = "openclaw"
+)
+
+sbx stop $Sandbox 2>$null
 
 "2" | sbx policy reset --force
 sbx policy set-default balanced
