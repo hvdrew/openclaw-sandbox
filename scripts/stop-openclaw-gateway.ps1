@@ -1,47 +1,23 @@
-# scripts/stop-openclaw.ps1
+# scripts/stop-openclaw-gateway.ps1
 
 param(
   [string]$Sandbox = "openclaw",
   [switch]$KeepSandbox
 )
 
-$bashScript = @'
-set -u
+Write-Host "Stopping OpenClaw Gateway process..."
 
-echo "Stopping OpenClaw Gateway..."
-
-if command -v openclaw >/dev/null 2>&1; then
-  if command -v timeout >/dev/null 2>&1; then
-    timeout 10s openclaw gateway stop >/dev/null 2>&1 || true
-  else
-    openclaw gateway stop >/dev/null 2>&1 || true
-  fi
-fi
-
-pkill -f "openclaw gateway" >/dev/null 2>&1 || true
-
-echo "Gateway stop command completed."
-'@ -replace "`r", ""
-
-$bytes = [System.Text.Encoding]::UTF8.GetBytes($bashScript)
-$b64 = [Convert]::ToBase64String($bytes)
-
-$remoteCommand = "printf '%s' '$b64' | base64 -d > /tmp/stop-openclaw-gateway.sh && chmod +x /tmp/stop-openclaw-gateway.sh && /tmp/stop-openclaw-gateway.sh"
-
-Write-Host "Stopping gateway inside sandbox '$Sandbox'..."
-
-sbx exec $Sandbox bash -lc $remoteCommand
+sbx exec $Sandbox bash -lc 'pkill -f "[o]penclaw gateway" 2>/dev/null || true'
 
 if ($LASTEXITCODE -ne 0) {
-  Write-Host "Gateway stop command failed or sandbox was not reachable. Continuing..."
+  Write-Host "Gateway process stop failed or sandbox was not reachable. Continuing."
 }
 
 if (-not $KeepSandbox) {
-  Write-Host "Stopping sandbox '$Sandbox'..."
-  sbx stop $Sandbox
+  Write-Host "Stopping sandbox..."
+  sbx stop $Sandbox 2>$null
 } else {
-  Write-Host "Keeping sandbox '$Sandbox' running."
+  Write-Host "Keeping sandbox running."
 }
 
-Write-Host ""
 Write-Host "Done."

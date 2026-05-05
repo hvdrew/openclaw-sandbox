@@ -1,3 +1,5 @@
+# scripts/sbx-network-policy-normal.ps1
+
 sbx stop openclaw 2>$null
 
 "2" | sbx policy reset --force
@@ -17,3 +19,5 @@ sbx policy allow network "discord.com,gateway.discord.gg,cdn.discordapp.com,medi
 sbx policy allow network "api.steampowered.com"
 
 sbx policy ls --type network
+
+Write-Host "Sandbox network policy set to custom/Balanced."

@@ -192,10 +192,17 @@ openclaw tui
 # Scripts
 This project got more complicated than I had hoped, go figure. These scripts are to help make the process a bit easier to recall/work within.
 
-## Network Policy Scripts
-These two scripts are for flipping between network policy modes if needed. The normal script will set the network to allow only a short list of domains, plus the standard dev domains docker includes in the default balanced preset.
+## Start/Stop Gateway
+These are likely a bit overkill, but I hate having to remember a bunch of docker commands. That goes double since we are dealing with a new `sbx` syntax. Use them to fully start or fully stop the application.
+```powershell
+./scripts/start-openclaw-gateway.ps1
+./scripts/stop-openclaw-gateway.ps1
+```
 
-The open script will, as the name implies, set the network policies to fully open. This is not the smartest thing to do, but is all but necessary when working on things like scrapers/bots. On the bright side this doesn't really expose anything important aside from whatever exists on the OpenClaw sandbox machine, such as API keys and other secrets it might be using.
+## Network Policy Scripts
+These two scripts are for flipping between network policy modes if needed. The normal script will set the network to allow only a short list of domains, plus the standard dev domains docker includes in the default balanced preset. I've added a few things here and there to get some of my projects working, none of which should be suspect. Give the script a look and modify it to your heart's content, just in case.
+
+The open script will, as the name implies, set the network policies to fully open. This is not the smartest thing to do, but is all but necessary when working on things like scrapers/bots. On the bright side this doesn't really expose anything important aside from whatever exists on the OpenClaw sandbox machine, such as API keys and other secrets it might be using. Don't share sensitive stuff with this thing, it can't actually think and it is very possible that someone could get it to expose anything it might know.
 
 No arguments are required for either script.
 ```powershell
