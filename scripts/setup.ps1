@@ -96,13 +96,16 @@ if ($Template -and $Template -match "[<>]") {
 }
 
 $existing = sbx ls 2>$null | Where-Object { $_ -match "^$([regex]::Escape($Sandbox))\s" }
-if ($existing) {
-  if (-not $Force) {
-    throw "Sandbox '$Sandbox' already exists. Use a different -Sandbox name or pass -Force to remove and recreate it."
-  }
+$createSandbox = $true
 
-  Write-Host "Removing existing sandbox '$Sandbox' because -Force was provided."
-  Invoke-CheckedCommand "sbx" @("rm", $Sandbox, "-f")
+if ($existing) {
+  if ($Force) {
+    Write-Host "Removing existing sandbox '$Sandbox' because -Force was provided."
+    Invoke-CheckedCommand "sbx" @("rm", $Sandbox, "-f")
+  } else {
+    Write-Host "Sandbox '$Sandbox' already exists. Reusing it."
+    $createSandbox = $false
+  }
 }
 
 if (-not $SkipPolicy) {
@@ -113,24 +116,28 @@ if (-not $SkipPolicy) {
   Invoke-CheckedCommand "sbx" @("policy", "allow", "network", "localhost:12434")
 }
 
-$createArgs = @("create", "--name", $Sandbox)
+if ($createSandbox) {
+  $createArgs = @("create", "--name", $Sandbox)
 
-if ($Template) {
-  $createArgs += @("--template", $Template)
-}
-
-if (-not $NoKit) {
-  if (-not (Test-Path -LiteralPath $KitPath)) {
-    throw "Missing kit path: $KitPath"
+  if ($Template) {
+    $createArgs += @("--template", $Template)
   }
 
-  $createArgs += @("--kit", $KitPath)
+  if (-not $NoKit) {
+    if (-not (Test-Path -LiteralPath $KitPath)) {
+      throw "Missing kit path: $KitPath"
+    }
+
+    $createArgs += @("--kit", $KitPath)
+  }
+
+  $createArgs += @("shell", $Workspace)
+
+  Write-Host "Creating sandbox '$Sandbox'."
+  $Sandbox = Invoke-SandboxCreate $createArgs $Sandbox
+} else {
+  Write-Host "Skipping sandbox creation."
 }
-
-$createArgs += @("shell", $Workspace)
-
-Write-Host "Creating sandbox '$Sandbox'."
-$Sandbox = Invoke-SandboxCreate $createArgs $Sandbox
 
 if (-not $SkipBootstrap) {
   Write-Host "Copying latest OpenClaw bootstrap script."
