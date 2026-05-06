@@ -40,8 +40,16 @@ function Invoke-SandboxCreate {
     [string]$RequestedSandbox
   )
 
-  $output = & sbx @Arguments 2>&1
-  $exitCode = $LASTEXITCODE
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+
+  try {
+    $output = & sbx @Arguments 2>&1
+    $exitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
   $output | ForEach-Object { Write-Host $_ }
 
   if ($exitCode -eq 0) {
@@ -68,8 +76,16 @@ function Invoke-SandboxCreate {
   Write-Host "Retrying with '$fallbackSandbox'."
   Write-Host ""
 
-  $retryOutput = & sbx @retryArgs 2>&1
-  $retryExitCode = $LASTEXITCODE
+  $previousErrorActionPreference = $ErrorActionPreference
+  $ErrorActionPreference = "Continue"
+
+  try {
+    $retryOutput = & sbx @retryArgs 2>&1
+    $retryExitCode = $LASTEXITCODE
+  } finally {
+    $ErrorActionPreference = $previousErrorActionPreference
+  }
+
   $retryOutput | ForEach-Object { Write-Host $_ }
 
   if ($retryExitCode -ne 0) {
