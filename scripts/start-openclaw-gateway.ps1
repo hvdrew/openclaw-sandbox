@@ -27,7 +27,8 @@ echo "Dashboard: http://127.0.0.1:${PORT}/?token=$TOKEN"
 echo ""
 
 while [ ! -f "$STOP_FILE" ]; do
-  openclaw gateway --bind lan --port "$PORT" --auth token --token "$TOKEN"
+  echo "Starting OpenClaw Gateway on port ${PORT}..."
+  openclaw gateway run --bind lan --port "$PORT" --auth token --token "$TOKEN" --force --verbose
   code="$?"
 
   if [ -f "$STOP_FILE" ]; then

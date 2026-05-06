@@ -88,7 +88,7 @@ echo "Dashboard: http://localhost:${PORT}/?token=${TOKEN}"
 echo "Dashboard: http://127.0.0.1:${PORT}/?token=${TOKEN}"
 echo ""
 
-exec openclaw gateway --bind lan --port "${PORT}" --auth token --token "${TOKEN}"
+exec openclaw gateway run --bind lan --port "${PORT}" --auth token --token "${TOKEN}" --force --verbose
 EOF
 
   cat > "$bin_dir/openclaw-codex-login" <<'EOF'
