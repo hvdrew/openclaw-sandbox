@@ -31,6 +31,54 @@ function Invoke-CheckedCommand {
   }
 }
 
+function Invoke-SandboxCreate {
+  param(
+    [Parameter(Mandatory = $true)]
+    [string[]]$Arguments,
+
+    [Parameter(Mandatory = $true)]
+    [string]$RequestedSandbox
+  )
+
+  $output = & sbx @Arguments 2>&1
+  $exitCode = $LASTEXITCODE
+  $output | ForEach-Object { Write-Host $_ }
+
+  if ($exitCode -eq 0) {
+    return $RequestedSandbox
+  }
+
+  $message = ($output | ForEach-Object { $_.ToString() }) -join "`n"
+  if ($message -notmatch "already exists") {
+    throw "Command failed with exit code $exitCode`: sbx $($Arguments -join ' ')"
+  }
+
+  $fallbackSandbox = "$RequestedSandbox-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+  $retryArgs = @($Arguments)
+
+  for ($i = 0; $i -lt ($retryArgs.Count - 1); $i++) {
+    if ($retryArgs[$i] -eq "--name") {
+      $retryArgs[$i + 1] = $fallbackSandbox
+      break
+    }
+  }
+
+  Write-Host ""
+  Write-Host "Sandbox '$RequestedSandbox' appears to have stale runtime state."
+  Write-Host "Retrying with '$fallbackSandbox'."
+  Write-Host ""
+
+  $retryOutput = & sbx @retryArgs 2>&1
+  $retryExitCode = $LASTEXITCODE
+  $retryOutput | ForEach-Object { Write-Host $_ }
+
+  if ($retryExitCode -ne 0) {
+    throw "Command failed with exit code $retryExitCode`: sbx $($retryArgs -join ' ')"
+  }
+
+  return $fallbackSandbox
+}
+
 if (-not $Workspace) {
   $Workspace = Join-Path $RepoRoot "sandbox"
 }
@@ -82,7 +130,7 @@ if (-not $NoKit) {
 $createArgs += @("shell", $Workspace)
 
 Write-Host "Creating sandbox '$Sandbox'."
-Invoke-CheckedCommand "sbx" $createArgs
+$Sandbox = Invoke-SandboxCreate $createArgs $Sandbox
 
 if (-not $SkipBootstrap) {
   Write-Host "Copying latest OpenClaw bootstrap script."
