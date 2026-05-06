@@ -18,7 +18,6 @@ This is intended to be ran on Windows 11. You very likely need to have the follo
 - Get the `sbx` CLI installed if you haven't yet (`winget install -h Docker.sbx`)
 - Make sure to log in as well, then select Balanced for the network mode. `sbx login`
 - If you're using local models, set up Ollama for your machine. If you're fancy you can swap this component out for Llama.cpp or use Docker Model Runner, but Ollama worked fine for me.
-- Docker Model Runner is no longer required for the default setup. This project now defaults to OpenAI Codex.
 
 Fair warning, using this with a local model requires a decent amount of VRAM to work well (or possibly at all). My setup has 16GB of VRAM (RTX 4070s Ti). All in all local models were fun to mess with, but it really wasn't as capable as I was hoping it would be. You win for now, AI companies :(
 
