@@ -6,18 +6,12 @@ Note that while I initially was focused on running this with Local models, the p
 This is all inspired by [this blog post](https://www.docker.com/blog/run-openclaw-securely-in-docker-sandboxes/) from docker.com, although the guide itself is based on stale info and required a migration to the new `sbx` CLI that docker offers. The `docker sandbox` syntax has been deprecated for some time.
 
 
-### Further Integration
-To take this further you should consider setting up a Channel within OpenClaw once it's up and running. I have mine set up as a Discord bot to allow for easy communication from anywhere. It is a full moderator on it's own server and has really been cool to work with.
-
-I'd highly recommend either discord or WhatsApp to get the most out of this setup.
-
-
 ## Notes on setup
-This is intended to be ran on Windows 11. You very likely need to have the following set up:
+This is intended to be ran on Windows 11 and the project uses powershell scripts for installation. You need to have the following set up:
 - WSL2, plus enabling WSL2 functionality in Docker Desktop's settings
-- Get the `sbx` CLI installed if you haven't yet (`winget install -h Docker.sbx`)
-- Make sure to log in as well, then select Balanced for the network mode. `sbx login`
-- If you're using local models, set up Ollama for your machine. If you're fancy you can swap this component out for Llama.cpp or use Docker Model Runner, but Ollama worked fine for me.
+- The `sbx` CLI (install by running: `winget install -h Docker.sbx`)
+  - After installing, ensure you are logged in with `sbx login`
+- Ollama, Llama.cpp, etc. - only if you're looking to run this with local models.
 
 Fair warning, using this with a local model requires a decent amount of VRAM to work well (or possibly at all). My setup has 16GB of VRAM (RTX 4070s Ti). All in all local models were fun to mess with, but it really wasn't as capable as I was hoping it would be. You win for now, AI companies :(
 
@@ -29,7 +23,7 @@ This was last tested against OpenClaw `2026.5.4 (325df3e)`.
 
 Recommended/default setup:
 ```powershell
-./scripts/setup.ps1 -Template "docker.io/merison/openclaw-sbx:v0.1.0"
+./scripts/setup.ps1
 ```
 
 That uses the project `sandbox` directory as the workspace and names the sandbox `openclaw`.
@@ -41,9 +35,10 @@ $testWorkspace = Join-Path $env:TEMP "openclaw-sbx-test-workspace"
 ./scripts/setup.ps1 `
   -Sandbox openclaw-build-test `
   -Workspace $testWorkspace `
-  -Template "docker.io/merison/openclaw-sbx:v0.1.0" `
   -SkipPolicy
 ```
+
+Try a custom name for the sandbox if you have issues with the default sandbox name (`openclaw`). You can also try adding `-Force` when invoking the setup script to attempt to force it.
 
 Once setup finishes, connect to the sandbox:
 ```powershell

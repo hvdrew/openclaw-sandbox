@@ -2,7 +2,7 @@
 param(
   [string]$Sandbox = "openclaw",
   [string]$Workspace,
-  [string]$Template,
+  [string]$Template = "docker.io/merison/openclaw-sbx:v0.1.0",
   [string]$DefaultModel = "openai-codex/gpt-5.5",
   [switch]$NoKit,
   [switch]$SkipPolicy,
