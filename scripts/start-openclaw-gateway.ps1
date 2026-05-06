@@ -10,6 +10,15 @@ param(
 $remoteBash = @'
 PORT="__PORT__"
 TOKEN="$(openssl rand -hex 32)"
+STOP_FILE="/tmp/openclaw-gateway-stop-${PORT}"
+
+rm -f "$STOP_FILE"
+
+trap 'touch "$STOP_FILE"; exit 0' INT TERM
+
+export TERM="${TERM:-xterm-256color}"
+export FORCE_COLOR=1
+export CLICOLOR_FORCE=1
 
 echo ""
 echo "Gateway token: $TOKEN"
@@ -17,7 +26,22 @@ echo "Dashboard: http://localhost:${PORT}/?token=$TOKEN"
 echo "Dashboard: http://127.0.0.1:${PORT}/?token=$TOKEN"
 echo ""
 
-openclaw gateway --bind lan --port "$PORT" --auth token --token "$TOKEN"
+while [ ! -f "$STOP_FILE" ]; do
+  openclaw gateway --bind lan --port "$PORT" --auth token --token "$TOKEN"
+  code="$?"
+
+  if [ -f "$STOP_FILE" ]; then
+    break
+  fi
+
+  echo ""
+  echo "OpenClaw Gateway exited with code ${code}. Restarting in 2 seconds..."
+  echo "Run ./scripts/stop-openclaw-gateway.ps1 from the host to stop it intentionally."
+  echo ""
+  sleep 2
+done
+
+rm -f "$STOP_FILE"
 '@ -replace "__PORT__", $Port -replace "`r", ""
 
 $remoteB64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($remoteBash))

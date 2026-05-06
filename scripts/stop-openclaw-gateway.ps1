@@ -9,7 +9,7 @@ param(
 
 Write-Host "Stopping OpenClaw Gateway process in SBX '$Sandbox'..."
 
-sbx exec $Sandbox bash -lc 'pkill -f "[o]penclaw gateway" 2>/dev/null || true'
+sbx exec $Sandbox bash -lc "touch /tmp/openclaw-gateway-stop-$Port; pkill -f '[o]penclaw gateway' 2>/dev/null || true"
 
 if ($LASTEXITCODE -ne 0) {
   Write-Host "Gateway process stop failed or sandbox was not reachable. Continuing."
